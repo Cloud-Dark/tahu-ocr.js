@@ -11,4 +11,8 @@ export function createOCRPrompt(outputFormat = 'json', options = {}) {
   const colorDetection = options.includeColors !== false ? `\n9. COLOR ANALYSIS:\n   - Detect the primary color of each text element\n   - Identify background color behind text when possible\n   - Use standard color names (red, blue, green, etc.) or hex codes\n   - If color cannot be determined, use "unknown"` : '';
 
   if (outputFormat === 'json') {
-    return basePrompt + colorDetection + `\n\nOUTPUT FORMAT: Return ONLY a valid JSON object with this exact structure:\n{\n  \
+    return basePrompt + colorDetection + `\n\nOUTPUT FORMAT: Return ONLY a valid JSON object with this exact structure:\n{\n  "rawText": "[Concatenated text from all elements]",\n  "elements": [\n    {\n      "text": "[Extracted text]",\n      "coordinates": {\n        "x": [number],\n        "y": [number],\n        "width": [number],\n        "height": [number],\n        "centerX": [number],\n        "centerY": [number]\n      },\n      "confidence": [number 0-100],\n      "color": "[string, e.g., black, #RRGGBB]",\n      "backgroundColor": "[string, e.g., white, #RRGGBB]",\n      "lineNumber": [number],\n      "wordIndex": [number]\n    }\n    // ... more OCRTextElement objects\n  ],\n  "metadata": {\n    "totalElements": [number],\n    "averageConfidence": [number],\n    "processingTimeMs": [number],\n    "imageInfo": {\n      "width": [original image width],\n      "height": [original image height],\n      "format": "[original image format, e.g., png, jpeg]"\n    }\n  }\n}\n\nEnsure the JSON is perfectly formatted and valid. Do NOT include any other text or explanation outside the JSON object.`;
+  } else {
+    return basePrompt + colorDetection + `\n\nOUTPUT FORMAT: Return ONLY the raw extracted text, concatenated line by line. Do NOT include any coordinates, confidence scores, or other metadata.`;
+  }
+}

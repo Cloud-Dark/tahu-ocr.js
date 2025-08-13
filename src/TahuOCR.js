@@ -6,8 +6,6 @@
 // Features: Coordinate detection, color analysis, batch processing
 // ============================================================================ 
 
-import { createTahu } from 'tahu.js';
-import sharp from 'sharp'; // Still needed for test method
 import { validateConfig, getDefaultModel, log as configLog } from './config.js';
 import { processImage as imageProcessor } from './imageProcessor.js';
 import { createOCRPrompt } from './promptGenerator.js';
@@ -67,7 +65,8 @@ class TahuOCR {
    * Create TahuOCR instance
    * @param {TahuOCRConfig} config - Configuration object
    */
-  constructor(config) {
+  constructor(config, injectedTahu = null, injectedSharp = null, injectedImageProcessor = null, injectedPromptGenerator = null, injectedResultParser = null, injectedConfig = null) {
+    const { validateConfig, getDefaultModel, log: configLog } = injectedConfig || { validateConfig: () => {}, getDefaultModel: () => 'mock-model', log: () => {} }; // Use injectedConfig or default mocks
     validateConfig(config);
     
     this.config = {
@@ -82,14 +81,23 @@ class TahuOCR {
       ...config
     };
 
-    // Initialize TahuJS
-    this.tahu = createTahu({
+    // Initialize TahuJS or use injected mock
+    this.tahu = injectedTahu || createTahu({
       provider: this.config.provider,
       apiKey: this.config.apiKey,
       model: this.config.model || getDefaultModel(this.config.provider),
       ollamaBaseUrl: this.config.ollamaBaseUrl,
       temperature: 0.1, // Low temperature for consistent OCR results
     });
+
+    // Use injected sharp or the actual sharp library
+    this.sharp = injectedSharp || sharp;
+
+    // Use injected internal modules or their original imports
+    this.imageProcessor = injectedImageProcessor || imageProcessor;
+    this.createOCRPrompt = injectedPromptGenerator || createOCRPrompt;
+    this.parseJSONResult = injectedResultParser || parseJSONResult;
+    this.configModule = injectedConfig || { validateConfig, getDefaultModel, log: configLog }; // Store config module for log
 
     this.log('TahuOCR initialized with provider:', this.config.provider);
   }
@@ -99,7 +107,7 @@ class TahuOCR {
    * @private
    */
   log(...args) {
-    configLog(this.config.debug, ...args);
+    this.configModule.log(this.config.debug, ...args);
   }
 
   /**
@@ -126,7 +134,7 @@ class TahuOCR {
       this.log('Starting OCR extraction...');
 
       // Process image
-      const { buffer, metadata, originalMetadata } = await imageProcessor(imagePath, this.config.imageOptions, this.log.bind(this));
+      const { buffer, metadata, originalMetadata } = await this.imageProcessor(imagePath, this.config.imageOptions, this.log.bind(this));
 
       // Convert image to base64
       const base64Image = buffer.toString('base64');
@@ -134,7 +142,7 @@ class TahuOCR {
       const dataUri = `data:${mimeType};base64,${base64Image}`;
 
       // Create prompt
-      const prompt = customPrompt || createOCRPrompt(format, { includeColors });
+      const prompt = customPrompt || this.createOCRPrompt(format, { includeColors });
 
       this.log('Sending to AI provider...');
 
@@ -177,7 +185,7 @@ class TahuOCR {
 
       // Process result based on format
       if (format === 'json') {
-        const ocrResult = parseJSONResult(result, metadata, originalMetadata, startTime, this.log.bind(this));
+        const ocrResult = this.parseJSONResult(result, metadata, originalMetadata, startTime, this.log.bind(this));
         this.log(`OCR completed: ${ocrResult.elements.length} elements found`);
         return ocrResult;
       } else {
@@ -248,7 +256,7 @@ class TahuOCR {
     this.log(`Extracting text from ${regions.length} regions`);
 
     // Process the original image
-    const { buffer } = await imageProcessor(imagePath, this.config.imageOptions, this.log.bind(this));
+    const { buffer } = await this.imageProcessor(imagePath, this.config.imageOptions, this.log.bind(this));
 
     const results = [];
 
@@ -258,7 +266,7 @@ class TahuOCR {
 
       try {
         // Extract region from image
-        const regionBuffer = await sharp(buffer)
+        const regionBuffer = await this.sharp(buffer)
           .extract({
             left: Math.max(0, Math.floor(region.x)),
             top: Math.max(0, Math.floor(region.y)),
@@ -329,7 +337,7 @@ class TahuOCR {
       this.log('Running OCR test...');
       
       // Create a simple test image with text
-      const testImageBuffer = await sharp({
+      const testImageBuffer = await this.sharp.create({
         create: {
           width: 400,
           height: 200,
@@ -378,8 +386,8 @@ class TahuOCR {
 export { TahuOCR };
 
 // Convenience function to create TahuOCR instance
-export function createTahuOCR(config) {
-  return new TahuOCR(config);
+export function createTahuOCR(config, createTahuFn, sharpFn) {
+  return new TahuOCR(config, createTahuFn, sharpFn);
 }
 
 // Default export
