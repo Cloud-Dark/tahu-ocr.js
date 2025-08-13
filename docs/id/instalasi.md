@@ -5,7 +5,7 @@ Panduan ini akan membantu Anda mengatur dan menjalankan TahuOCR.js.
 ## 1. Kloning Repositori (Opsional, jika Anda mengunduh langsung)
 
 ```bash
-git clone https://github.com/your-repo/tahu-ocr.js.git
+git clone https://github.com/Cloud-Dark/tahu-ocr.js.git
 cd tahu-ocr.js
 ```
 
