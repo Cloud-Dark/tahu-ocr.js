@@ -1,0 +1,28 @@
+{
+  "name": "tahu-ocr.js",
+  "version": "1.0.0",
+  "description": "A simple OCR library for Indonesian text.",
+  "main": "./dist/tahu-ocr.js",
+  "type": "module",
+  "exports": {
+    ".": "./dist/tahu-ocr.js"
+  },
+  "scripts": {
+    "dev": "node example.js",
+    "build": "rollup -c",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "ocr",
+    "tesseract.js",
+    "indonesian"
+  ],
+  "author": "",
+  "license": "ISC",
+  "files": [
+    "dist"
+  ],
+  "devDependencies": {
+    "rollup": "^3.0.0"
+  }
+}
