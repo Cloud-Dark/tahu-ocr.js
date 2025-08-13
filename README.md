@@ -1,6 +1,6 @@
 # tahu-ocr.js
 
-A comprehensive and powerful AI-powered OCR library for Node.js, designed for Indonesian text but capable of handling various languages.
+A powerful AI-powered OCR library for Node.js, supporting multiple AI providers (OpenAI, Gemini, OpenRouter, Ollama) and capable of extracting text from various languages with precise coordinates, color detection, and advanced image processing.
 
 ## ✨ Features
 
