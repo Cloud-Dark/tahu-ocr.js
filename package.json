@@ -40,6 +40,13 @@
     "url": "https://github.com/Cloud-Dark/tahu-ocr.js.git"
   },
   "homepage": "https://github.com/Cloud-Dark/tahu-ocr.js",
+  "dependencies": {
+    "tahu.js": "^1.0.0",
+    "axios": "^1.0.0",
+    "sharp": "^0.32.0",
+    "form-data": "^4.0.0",
+    "dotenv": "^16.0.0"
+  },
   "devDependencies": {
     "rollup": "^3.0.0"
   }
