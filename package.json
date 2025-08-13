@@ -1,6 +1,6 @@
 {
   "name": "tahu-ocr.js",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A simple OCR library for Indonesian text.",
   "main": "./dist/tahu-ocr.js",
   "type": "module",
