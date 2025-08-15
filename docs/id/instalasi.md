@@ -2,6 +2,10 @@
 
 Panduan ini akan membantu Anda mengatur dan menjalankan TahuOCR.js.
 
+## Prasyarat
+
+Tahu-OCR.js membutuhkan Node.js versi 17, 18, 19, atau 20. Versi yang lebih baru atau lebih lama tidak didukung karena ketergantungan yang hanya kompatibel dengan rentang ini.
+
 ## 1. Kloning Repositori (Opsional, jika Anda mengunduh langsung)
 
 ```bash

@@ -19,6 +19,8 @@ Install the library and its peer dependencies:
 npm install tahu-ocr.js axios sharp form-data
 ```
 
+**Node.js Version Requirement**: Tahu-OCR.js requires Node.js versions 17, 18, 19, or 20. Newer or older versions are not supported due to dependencies that are only compatible with this range.
+
 Set up your environment variables by copying `.env.example` to `.env` and adding your API keys.
 
 ## 📚 Documentation
