@@ -1,4 +1,4 @@
-import sharp$1 from 'sharp';
+import sharp from 'sharp';
 import fs from 'fs/promises';
 import axios from 'axios';
 
@@ -29,11 +29,11 @@ async function processImage(imagePath, imageOptions, log) {
     }
 
     // Get image metadata
-    const metadata = await sharp$1(imageBuffer).metadata();
+    const metadata = await sharp(imageBuffer).metadata();
     log('Original image:', metadata);
 
     // Process image with Sharp
-    let processedImage = sharp$1(imageBuffer);
+    let processedImage = sharp(imageBuffer);
 
     // Resize if too large
     const { maxWidth, maxHeight } = imageOptions;
@@ -58,7 +58,7 @@ async function processImage(imagePath, imageOptions, log) {
       .jpeg({ quality: imageOptions.quality })
       .toBuffer();
 
-    const processedMetadata = await sharp$1(processedBuffer).metadata();
+    const processedMetadata = await sharp(processedBuffer).metadata();
     log('Processed image:', processedMetadata);
 
     return {
@@ -261,17 +261,17 @@ class TahuOCR {
       ...config
     };
 
-    // Initialize TahuJS or use injected mock
-    this.tahu = injectedTahu || createTahu({
-      provider: this.config.provider,
-      apiKey: this.config.apiKey,
-      model: this.config.model || getDefaultModel(this.config.provider),
-      ollamaBaseUrl: this.config.ollamaBaseUrl,
-      temperature: 0.1, // Low temperature for consistent OCR results
-    });
+    // Initialize TahuJS (must be injected)
+    if (!injectedTahu) {
+      throw new Error("TahuJS instance (injectedTahu) is required. Please use createTahuOCR and provide the createTahu function from 'tahu.js'.");
+    }
+    this.tahu = injectedTahu;
 
-    // Use injected sharp or the actual sharp library
-    this.sharp = injectedSharp || sharp;
+    // Use injected sharp (must be injected)
+    if (!injectedSharp) {
+      throw new Error("Sharp instance (injectedSharp) is required. Please use createTahuOCR and provide the sharp library.");
+    }
+    this.sharp = injectedSharp;
 
     // Use injected internal modules or their original imports
     this.imageProcessor = injectedImageProcessor || processImage;
