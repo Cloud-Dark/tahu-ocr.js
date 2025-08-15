@@ -1,6 +1,6 @@
 {
   "name": "tahu-ocr.js",
-  "version": "1.2.2",
+  "version": "1.3.0",
   "description": "A powerful AI-powered OCR library for Node.js, supporting multiple AI providers (OpenAI, Gemini, OpenRouter, Ollama) and capable of extracting text from various languages with precise coordinates, color detection, and advanced image processing.",
   "main": "./dist/tahu-ocr.js",
   "type": "module",
