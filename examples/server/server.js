@@ -1,6 +1,6 @@
 import express from 'express';
 import multer from 'multer';
-import { createTahuOCR } from '../src/index.js';
+import { createTahuOCR } from '../../src/index.js'; // Adjusted import path
 
 const app = express();
 const upload = multer(); // for parsing multipart/form-data

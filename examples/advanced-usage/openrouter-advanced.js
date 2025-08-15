@@ -1,4 +1,4 @@
-import { createTahuOCR } from '../src/index.js';
+import { createTahuOCR } from '../../src/index.js';
 import fs from 'fs/promises';
 import path from 'path';
 
@@ -21,7 +21,7 @@ const ocrOpenRouter = createTahuOCR({
  * Example 5: Batch Processing Multiple Images
  */
 export async function batchProcessingExample() {
-  console.log('📦 Batch Processing Example\n');
+  console.log('📦 Batch Processing Example (OpenRouter)\n');
   
   try {
     const imagePaths = [
@@ -57,7 +57,7 @@ export async function batchProcessingExample() {
  * Example 6: Region-based Extraction
  */
 export async function regionBasedExtraction() {
-  console.log('📋 Region-based Extraction Example\n');
+  console.log('📋 Region-based Extraction Example (OpenRouter)\n');
   
   try {
     // Define specific regions to extract (e.g., header, body, footer)
@@ -73,15 +73,14 @@ export async function regionBasedExtraction() {
       { format: 'json' }
     );
 
-    console.log('📄 Document Structure Analysis:');
+    console.log(' document Structure Analysis:');
     const regionNames = ['Header', 'Body', 'Footer'];
     
     results.forEach((result, index) => {
       if (result.error) {
         console.log(`❌ ${regionNames[index]}: Error - ${result.error}`);
       } else {
-        console.log(`
-📍 ${regionNames[index]} Region:`);
+        console.log(`\n📍 ${regionNames[index]} Region:`);
         console.log(`   Text: "${result.rawText.substring(0, 100)}"...`);
         console.log(`   Elements: ${result.elements.length}`);
       }
@@ -96,7 +95,7 @@ export async function regionBasedExtraction() {
  * Example 7: Custom Prompt for Specific Use Cases
  */
 export async function customPromptExample() {
-  console.log('🎯 Custom Prompt Example\n');
+  console.log('🎯 Custom Prompt Example (OpenRouter)\n');
   
   try {
     // Custom prompt for invoice processing
@@ -145,60 +144,9 @@ Return results in JSON format with the structure specified in your training.`;
   }
 }
 
-/**
- * Example 8: Multi-Provider Comparison
- */
-export async function multiProviderComparison() {
-  console.log('🔄 Multi-Provider Comparison Example\n');
-  
-  const providers = [
-    {
-      name: 'OpenRouter (Gemini)',
-      ocr: createTahuOCR({
-        provider: 'openrouter',
-        apiKey: process.env.OPENROUTER_API_KEY,
-        model: 'google/gemini-2.0-flash-exp:free'
-      })
-    },
-    {
-      name: 'OpenAI',
-      ocr: createTahuOCR({
-        provider: 'openai',
-        apiKey: process.env.OPENAI_API_KEY,
-        model: 'gpt-4o-mini'
-      })
-    },
-    {
-      name: 'Gemini Direct',
-      ocr: createTahuOCR({
-        provider: 'gemini',
-        apiKey: process.env.GEMINI_API_KEY,
-        model: 'gemini-2.0-flash-exp'
-      })
-    }
-  ];
-
-  const testImage = './sample-images/test-document.jpg';
-  
-  console.log('🧪 Testing same image with different providers...\n');
-
-  for (const { name, ocr } of providers) {
-    try {
-      console.log(`Testing ${name}...`);
-      const startTime = Date.now();
-      
-      const result = await ocr.extractText(testImage, { format: 'json' });
-      const endTime = Date.now();
-      
-      console.log(`✅ ${name} Results:`);
-      console.log(`   Elements found: ${result.elements.length}`);
-      console.log(`   Average confidence: ${result.metadata.averageConfidence.toFixed(1)}%`);
-      console.log(`   Processing time: ${endTime - startTime}ms`);
-      console.log(`   Raw text length: ${result.rawText.length} characters`);
-      console.log('');
-
-    } catch (error) {
-      console.log(`❌ ${name} failed: ${error.message}\n`);
-    }
-  }
-}
+export {
+  ocrOpenRouter,
+  batchProcessingExample,
+  regionBasedExtraction,
+  customPromptExample
+};

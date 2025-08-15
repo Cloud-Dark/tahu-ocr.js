@@ -1,4 +1,4 @@
-import { createTahuOCR } from '../src/index.js';
+import { createTahuOCR } from '../../src/index.js';
 import fs from 'fs/promises';
 import path from 'path';
 
@@ -21,7 +21,7 @@ const ocrOpenRouter = createTahuOCR({
  * Example 15: Production Document Processing Pipeline
  */
 export async function productionPipeline() {
-  console.log('🏭 Production Pipeline Example\n');
+  console.log('🏭 Production Pipeline Example (OpenRouter)\n');
   
   try {
     const documentTypes = [
@@ -68,7 +68,7 @@ export async function productionPipeline() {
       processingResults.push(analysis);
 
       console.log(`   ✅ Completed in ${processingTime}ms`);
-      console.log(`   📊 Elements: ${analysis.elements.length}`);
+      console.log(`   📊 Elements: ${analysis.elementsFound}`);
       console.log(`   💯 Avg confidence: ${analysis.averageConfidence.toFixed(1)}%`);
       console.log(`   🎨 Colors: ${analysis.colorsDetected.join(', ')}`);
     }
@@ -88,7 +88,7 @@ export async function productionPipeline() {
  * Example 16: Real-time OCR with File Watching
  */
 export async function realtimeOCRExample() {
-  console.log('👁️ Real-time OCR Example\n');
+  console.log('👁️ Real-time OCR Example (OpenRouter)\n');
   
   const watchDirectory = './watch-folder';
   
@@ -141,3 +141,9 @@ chokidar.watch('${watchDirectory}/*.{jpg,jpeg,png,gif,bmp,tiff}')
     console.error('❌ Real-time OCR setup error:', error.message);
   }
 }
+
+export {
+  ocrOpenRouter,
+  productionPipeline,
+  realtimeOCRExample
+};

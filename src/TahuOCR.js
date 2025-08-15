@@ -8,6 +8,8 @@
 
 import { validateConfig, getDefaultModel, log as configLog } from './config.js';
 import { processImage as imageProcessor } from './imageProcessor.js';
+import { createTahu } from 'tahu.js'; // Import createTahu
+import sharp from 'sharp'; // Import sharp
 import { createOCRPrompt } from './promptGenerator.js';
 import { parseJSONResult } from './resultParser.js';
 
@@ -65,7 +67,7 @@ class TahuOCR {
    * Create TahuOCR instance
    * @param {TahuOCRConfig} config - Configuration object
    */
-  constructor(config, injectedTahu = null, injectedSharp = null, injectedImageProcessor = null, injectedPromptGenerator = null, injectedResultParser = null, injectedConfig = null) {
+  constructor(config, injectedImageProcessor = null, injectedPromptGenerator = null, injectedResultParser = null, injectedConfig = null) {
     const { validateConfig, getDefaultModel, log: configLog } = injectedConfig || { validateConfig: () => {}, getDefaultModel: () => 'mock-model', log: () => {} }; // Use injectedConfig or default mocks
     validateConfig(config);
     
@@ -81,17 +83,11 @@ class TahuOCR {
       ...config
     };
 
-    // Initialize TahuJS (must be injected)
-    if (!injectedTahu) {
-      throw new Error("TahuJS instance (injectedTahu) is required. Please use createTahuOCR and provide the createTahu function from 'tahu.js'.");
-    }
-    this.tahu = injectedTahu;
+    // Initialize TahuJS directly
+    this.tahu = createTahu(this.config);
 
-    // Use injected sharp (must be injected)
-    if (!injectedSharp) {
-      throw new Error("Sharp instance (injectedSharp) is required. Please use createTahuOCR and provide the sharp library.");
-    }
-    this.sharp = injectedSharp;
+    // Use sharp directly
+    this.sharp = sharp;
 
     // Use injected internal modules or their original imports
     this.imageProcessor = injectedImageProcessor || imageProcessor;
@@ -386,8 +382,8 @@ class TahuOCR {
 export { TahuOCR };
 
 // Convenience function to create TahuOCR instance
-export function createTahuOCR(config, createTahuFn, sharpFn) {
-  return new TahuOCR(config, createTahuFn, sharpFn);
+export function createTahuOCR(config) {
+  return new TahuOCR(config);
 }
 
 // Default export

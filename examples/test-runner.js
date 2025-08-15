@@ -1,31 +1,47 @@
 import { createTahuOCR } from '../src/index.js';
 import { 
-  basicTextExtraction,
-  rawTextExtraction,
-  urlImageProcessing,
-  bufferProcessing,
-  createSampleImages,
-  quickStart,
-  ocrOpenRouter,
-  ocrOpenAI,
-  ocrGemini,
+  basicTextExtractionOpenRouter,
+  rawTextExtractionOpenRouter,
+  urlImageProcessingOpenRouter,
+  bufferProcessingOpenRouter,
+  quickStartOpenRouter,
+  ocrOpenRouter
+} from './basic-usage/openrouter.js';
+import { 
+  quickStartOpenAI,
+  basicTextExtractionOpenAI,
+  ocrOpenAI
+} from './basic-usage/openai.js';
+import { 
+  quickStartGemini,
+  basicTextExtractionGemini,
+  ocrGemini
+} from './basic-usage/gemini.js';
+import { 
+  quickStartOllama,
+  basicTextExtractionOllama,
   ocrOllama
-} from './basic-usage.js';
+} from './basic-usage/ollama.js';
+
 import { 
   batchProcessingExample,
   regionBasedExtraction,
-  customPromptExample,
+  customPromptExample
+} from './advanced-usage/openrouter-advanced.js';
+import { 
   multiProviderComparison
-} from './advanced-usage.js';
+} from './advanced-usage/multi-provider-comparison.js';
+
 import {
   idCardProcessing,
   tableDataExtraction,
   colorAnalysisExample
-} from './specialized-cases.js';
+} from './specialized-cases/openrouter-specialized.js';
+
 import {
   productionPipeline,
   realtimeOCRExample
-} from './production-examples.js';
+} from './production-examples/openrouter-production.js';
 
 /**
  * Example 12: Performance Testing
@@ -33,7 +49,7 @@ import {
 export async function performanceTest() {
   console.log('⚡ Performance Test Example\n');
   
-  const testImage = './sample-images/performance-test.jpg';
+  const testImage = 'D:\\poject\\tahu-ocr.js\\examples\\file_for_ocr_test\\full_color.png';
   
   console.log('🧪 Running performance comparison...');
   
@@ -129,6 +145,27 @@ export async function modelTestingExample() {
 }
 
 /**
+ * Example: PDF Processing
+ */
+export async function pdfProcessingExample() {
+  console.log('📄 PDF Processing Example\n');
+  
+  try {
+    const pdfPath = 'D:\\poject\\tahu-ocr.js\\examples\\file_for_ocr_test\\PublicWaterMassMailing.pdf';
+    
+    const result = await ocrOpenRouter.extractText(pdfPath, {
+      format: 'text'
+    });
+
+    console.log(`✅ Processed PDF from: ${pdfPath}`);
+    console.log(`📊 Extracted text length: ${result.length} characters`);
+
+  } catch (error) {
+    console.error('❌ PDF processing error:', error.message);
+  }
+}
+
+/**
  * Run all examples
  */
 export async function runAllExamples() {
@@ -136,22 +173,30 @@ export async function runAllExamples() {
   console.log('=' .repeat(60) + '\n');
 
   const examples = [
-    { name: 'Basic Text Extraction', fn: basicTextExtraction },
-    { name: 'Raw Text Only', fn: rawTextExtraction },
-    { name: 'URL Image Processing', fn: urlImageProcessing },
-    { name: 'Buffer Processing', fn: bufferProcessing },
-    { name: 'Batch Processing', fn: batchProcessingExample },
-    { name: 'Region-based Extraction', fn: regionBasedExtraction },
-    { name: 'Custom Prompt Usage', fn: customPromptExample },
+    { name: 'Basic Text Extraction (OpenRouter)', fn: basicTextExtractionOpenRouter },
+    { name: 'Raw Text Only (OpenRouter)', fn: rawTextExtractionOpenRouter },
+    { name: 'URL Image Processing (OpenRouter)', fn: urlImageProcessingOpenRouter },
+    { name: 'Buffer Processing (OpenRouter)', fn: bufferProcessingOpenRouter },
+    { name: 'Batch Processing (OpenRouter)', fn: batchProcessingExample },
+    { name: 'Region-based Extraction (OpenRouter)', fn: regionBasedExtraction },
+    { name: 'Custom Prompt Usage (OpenRouter)', fn: customPromptExample },
     { name: 'Multi-Provider Comparison', fn: multiProviderComparison },
-    { name: 'ID Card Processing', fn: idCardProcessing },
-    { name: 'Table Data Extraction', fn: tableDataExtraction },
-    { name: 'Color Analysis', fn: colorAnalysisExample },
-    { name: 'Performance Testing', fn: performanceTest },
-    { name: 'Error Handling', fn: errorHandlingExample },
-    { name: 'Model Testing', fn: modelTestingExample },
-    { name: 'Production Pipeline', fn: productionPipeline },
-    { name: 'Real-time OCR', fn: realtimeOCRExample }
+    { name: 'ID Card Processing (OpenRouter)', fn: idCardProcessing },
+    { name: 'Table Data Extraction (OpenRouter)', fn: tableDataExtraction },
+    { name: 'Color Analysis (OpenRouter)', fn: colorAnalysisExample },
+    { name: 'Performance Testing (OpenRouter)', fn: performanceTest },
+    { name: 'Error Handling (OpenRouter)', fn: errorHandlingExample },
+    { name: 'Model Testing (OpenRouter)', fn: modelTestingExample },
+    { name: 'Production Pipeline (OpenRouter)', fn: productionPipeline },
+    { name: 'Real-time OCR (OpenRouter)', fn: realtimeOCRExample },
+    { name: 'Quick Start (OpenRouter)', fn: quickStartOpenRouter },
+    { name: 'Quick Start (OpenAI)', fn: quickStartOpenAI },
+    { name: 'Quick Start (Gemini)', fn: quickStartGemini },
+    { name: 'Quick Start (Ollama)', fn: quickStartOllama },
+    { name: 'Basic Text Extraction (OpenAI)', fn: basicTextExtractionOpenAI },
+    { name: 'Basic Text Extraction (Gemini)', fn: basicTextExtractionGemini },
+    { name: 'Basic Text Extraction (Ollama)', fn: basicTextExtractionOllama },
+    { name: 'PDF Processing', fn: pdfProcessingExample } // Added PDF processing example
   ];
 
   for (let i = 0; i < examples.length; i++) {
@@ -166,7 +211,7 @@ export async function runAllExamples() {
     }
     
     if (i < examples.length - 1) {
-      console.log('\n' + '='.repeat(60));
+      console.log('\n' + '=' .repeat(60));
     }
   }
 

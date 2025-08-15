@@ -1,4 +1,4 @@
-import { createTahuOCR } from '../src/index.js';
+import { createTahuOCR } from '../../src/index.js';
 import fs from 'fs/promises';
 import path from 'path';
 
@@ -21,7 +21,7 @@ const ocrOpenRouter = createTahuOCR({
  * Example 9: ID Card / Driver's License Processing
  */
 export async function idCardProcessing() {
-  console.log('🆔 ID Card Processing Example\n');
+  console.log('🆔 ID Card Processing Example (OpenRouter)\n');
   
   try {
     const idPrompt = `You are an expert ID card OCR system. Extract all text from this ID card or driver's license with precise coordinates.
@@ -50,7 +50,7 @@ Include color information for security feature detection.`;
     const categories = {
       names: result.elements.filter(el => /^[A-Z][a-z]+ [A-Z][a-z]+/.test(el.text)),
       numbers: result.elements.filter(el => /^\d{8,}$/.test(el.text.replace(/\s/g, ''))),
-      dates: result.elements.filter(el => /\d{1,2}\/\d{1,2}\/\d{4}|\d{4}-\d{2}-\d{2}|\d{1,2}-\d{1,2}-\d{4}/.test(el.text)),
+      dates: result.elements.filter(el => /\d{1,2}\\/\d{1,2}\\/\d{4}|\d{4}-\d{2}-\d{2}|\d{1,2}-\d{1,2}-\d{4}/.test(el.text)),
       addresses: result.elements.filter(el => el.text.length > 20 && /\d+/.test(el.text))
     };
 
@@ -58,7 +58,7 @@ Include color information for security feature detection.`;
       if (items.length > 0) {
         console.log(`\n${category.toUpperCase()}:`);
         items.forEach(item => {
-          console.log(`  - "${item.text}" at (${item.coordinates.x}, ${item.coordinates.y})`);
+          console.log(`  - "${item.text}" (${item.coordinates.x}, ${item.coordinates.y})`);
         });
       }
     });
@@ -72,7 +72,7 @@ Include color information for security feature detection.`;
  * Example 10: Table Data Extraction
  */
 export async function tableDataExtraction() {
-  console.log('📊 Table Data Extraction Example\n');
+  console.log('📊 Table Data Extraction Example (OpenRouter)\n');
   
   try {
     const tablePrompt = `You are a table OCR expert. Extract all text from this table image with precise coordinates.
@@ -106,8 +106,7 @@ Return structured data that preserves the table layout.`;
     
     // Display first few rows
     Object.entries(rows).slice(0, 5).forEach(([rowIndex, cells]) => {
-      console.log(`\nRow ${parseInt(rowIndex) + 1}:
-`);
+      console.log(`\nRow ${parseInt(rowIndex) + 1}:\n`);
       cells
         .sort((a, b) => a.coordinates.x - b.coordinates.x) // Sort by X coordinate
         .forEach(cell => {
@@ -124,7 +123,7 @@ Return structured data that preserves the table layout.`;
  * Example 11: Color Analysis and Text Styling
  */
 export async function colorAnalysisExample() {
-  console.log('🎨 Color Analysis Example\n');
+  console.log('🎨 Color Analysis Example (OpenRouter)\n');
   
   try {
     const result = await ocrOpenRouter.extractText('./sample-images/colorful-document.jpg', {
@@ -143,8 +142,7 @@ export async function colorAnalysisExample() {
     });
 
     Object.entries(colorGroups).forEach(([color, elements]) => {
-      console.log(`\n${color.toUpperCase()} TEXT (${elements.length} elements):
-`);
+      console.log(`\n${color.toUpperCase()} TEXT (${elements.length} elements):\n`);
       elements.slice(0, 3).forEach(el => { // Show first 3 of each color
         console.log(`  - "${el.text}" (${el.color}) - ${el.confidence}% confidence`);
       });
@@ -166,3 +164,10 @@ export async function colorAnalysisExample() {
     console.error('❌ Color analysis error:', error.message);
   }
 }
+
+export {
+  ocrOpenRouter,
+  idCardProcessing,
+  tableDataExtraction,
+  colorAnalysisExample
+};
